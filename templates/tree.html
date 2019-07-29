@@ -1,0 +1,618 @@
+﻿<!-- 
+    Honour Project: ANU Study Planner
+    
+    Author: Tianshu Wang
+    uniID: u6342392
+ -->
+
+ <!-- 
+    In this program, we construct our user interface by HTML 
+    and the interaction between the front and the back end by
+    JavaScript.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Tree</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+    
+    <style>
+    .node {
+      cursor: pointer;
+      }
+    
+    .node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 3px;
+      }
+
+	.node text {
+	  font: 12px sans-serif;
+	}
+
+	.link {
+	  fill: none;
+	  stroke: #ccc;
+	  stroke-width: 2px;
+	}
+	
+</style>
+</head>
+
+<body>
+<div id="bnr-wrap" role="banner">
+  <div id="bnr">
+    <div id="bnr-left">
+      <a href="http://www.anu.edu.au/" class="anu-logo-png">
+        <img class="test-white" src="static/images/2x_anu_logo_small.png" width="150px" height="53px" onmouseover="this.src='static/images/2x_anu_logo_small_over.png';" onmouseout="this.src='static/images/2x_anu_logo_small1.png'" alt="The Australian National University">
+      </a>
+    </div>
+    <div id="bnr-right">
+      <div id="mainpage">
+        <p id='sysname'>
+          Study Plan Generator
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="breadcrumbs">
+  <ul id="menu">
+    <li id="ANU">
+      <a href="http://anu.edu.au/" title="ANU">ANU</a>
+        </li>
+          <li id="Program">
+            <a href="https://programsandcourses.anu.edu.au/" title="Programs and Courses">Programs and Courses</a>
+          </li>
+        <li id="Timetablebuilder">
+          <a href="http://www.anu.edu.au/students/program-administration/timetabling/" title="Timetable Builder">Timetable Builder</a>
+        </li>
+  </ul>
+</div>
+
+<div id="option">
+  <input name="finishButton" type="button" class="btn btn-info" onclick="check()" value="Let's Plan" />
+  <input name ="updateButton" type="button" class="btn btn-success" onclick="editTable()" value="Update"/>
+</div>
+
+<div id="enrollinfo">
+  <ul>
+      <h2 style="font-size: 1.1rem !important; color: #3e85bd">PROGRAMS:</h2>
+      <select id="enroll-program">
+        <option value="7706XMCOMP">Master of Computing</option>
+        <option value="VCOMP">Master of Computing(Adv)</option>
+      </select>
+      <h3 style="font-size: 1.1rem !important; color: #3e85bd">YEAR:</h3>
+      <select id="enroll-year">
+        <option value="2019">2019</option>
+        <option value="2018">2018</option>
+      </select>
+      <h3 style="font-size: 1.1rem !important; color: #3e85bd">SEMESTER:</h3>
+      <select id="enroll-month">
+        <option value="1">Feburary</option>
+        <option value="2">July</option>
+      </select>
+  </ul>
+</div>
+
+<div class="container">
+  <table id="table" data-height="202">
+  <thead>
+      <tr>
+          <th data-field="semester">Semester</th>
+          <th data-field="c1">c1</th>
+          <th data-field="c2">c2</th>
+          <th data-field="c3">c3</th>
+          <th data-field="c4">c4</th>
+      </tr>
+  </thead>
+  </table>
+</div>
+  
+<!-- load the d3.js library -->	
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.13.0/d3-legend.min.js"></script>
+<script>
+
+var treedata = [
+    {
+        "name": "MCOMP",
+        "parent": "null",
+        "children": [
+            {
+                "name": "36 units",
+                "parent": "MCOMP",
+                "children": [
+                    {"name": "COMP6250", "parent": "36 units"},
+                    {"name": "COMP6442", "parent": "36 units"},
+                    {"name": "COMP6710", "parent": "36 units"},
+                    {"name": "COMP8110", "parent": "36 units"},
+                    {"name": "COMP8260", "parent": "36 units"},
+                    {"name": "MATH6005", "parent": "36 units"}
+                ]   
+            },
+            {
+                "name": "6 units",
+                "parent": "MCOMP",
+                "children": [
+                    {"name": "COMP6120", "parent": "6 units"},
+                    {"name": "COMP8190", "parent": "6 units"}
+                ]
+            },
+            {
+                "name": "6 units",
+                "parent": "MCOMP",
+                "children": [
+                    {"name": "COMP6240", "parent": "6 units"},
+                    {"name": "COMP6420", "parent": "6 units"}
+                ]
+            },
+            {
+                "name": "6 units",
+                "parent": "MCOMP",
+                "children": [
+                    {"name": "COMP6331", "parent": "6 units"},
+                    {"name": "COMP6340", "parent": "6 units"}
+                ]
+            },
+            {
+                "name": "12 units",
+                "parent":"MCOMP",
+                "children": [
+                    {"name": "COMP8715", "parent": "12 units"},
+                    {"name": "COMP8755", "parent": "12 units"},
+                    {"name": "COMP8830", "parent": "12 units"}
+                ]
+            },
+            {
+                "name": "OR",
+                "parent":"MCOMP",
+                "children": [
+                    {
+                        "name": "30 units",
+                        "parent": "OR",
+                        "children": [
+                          {"name": "COMP6260", "parent": "30 units"},{"name": "COMP8670", "parent": "30 units"},
+                          {"name": "COMP6365", "parent": "30 units"},{"name": "COMP7500", "parent": "30 units"},
+                          {"name": "COMP6670", "parent": "30 units"},{"name": "COMP6330", "parent": "30 units"},
+                          {"name": "COMP6445", "parent": "30 units"},{"name": "COMP8320", "parent": "30 units"},
+                          {"name": "COMP8460", "parent": "30 units"},{"name": "COMP6466", "parent": "30 units"},
+                          {"name": "COMP6470", "parent": "30 units"},{"name": "COMP6310", "parent": "30 units"},
+                          {"name": "COMP6464", "parent": "30 units"},{"name": "COMP6311", "parent": "30 units"},
+                          {"name": "COMP6719", "parent": "30 units"},{"name": "COMP6780", "parent": "30 units"},
+                          {"name": "COMP8823", "parent": "30 units"},{"name": "COMP8300", "parent": "30 units"},
+                          {"name": "COMP6261", "parent": "30 units"},{"name": "COMP8701", "parent": "30 units"},
+                          {"name": "COMP6301", "parent": "30 units"},{"name": "COMP6262", "parent": "30 units"},
+                          {"name": "COMP8440", "parent": "30 units"},{"name": "COMP8800", "parent": "30 units"},
+                          {"name": "COMP6720", "parent": "30 units"},{"name": "COMP8502", "parent": "30 units"},
+                          {"name": "COMP6730", "parent": "30 units"},{"name": "COMP6300", "parent": "30 units"},
+                          {"name": "COMP7310", "parent": "30 units"},{"name": "COMP8705", "parent": "30 units"},
+                          {"name": "COMP7240", "parent": "30 units"},{"name": "COMP8330", "parent": "30 units"},
+                          {"name": "COMP8180", "parent": "30 units"},{"name": "COMP6700", "parent": "30 units"},
+                          {"name": "COMP6363", "parent": "30 units"},{"name": "COMP8820", "parent": "30 units"},
+                          {"name": "COMP8501", "parent": "30 units"},{"name": "COMP6361", "parent": "30 units"},
+                          {"name": "COMP7230", "parent": "30 units"}
+                        ]
+                    },
+                    {
+                        "name": "AND",
+                        "parent": "OR",
+                        "children": [
+                            {
+                                "name": "6 units",
+                                "parent": "AND",
+                                "children": [
+                                    {"name": "COMP6260", "parent": "6 units"},{"name": "COMP8670", "parent": "6 units"},
+                                    {"name": "COMP6365", "parent": "6 units"},{"name": "COMP7500", "parent": "6 units"},
+                                    {"name": "COMP6670", "parent": "6 units"},{"name": "COMP6330", "parent": "6 units"},
+                                    {"name": "COMP6445", "parent": "6 units"},{"name": "COMP8320", "parent": "6 units"},
+                                    {"name": "COMP8460", "parent": "6 units"},{"name": "COMP6466", "parent": "6 units"},
+                                    {"name": "COMP6470", "parent": "6 units"},{"name": "COMP6310", "parent": "6 units"},
+                                    {"name": "COMP6464", "parent": "6 units"},{"name": "COMP6311", "parent": "6 units"},
+                                    {"name": "COMP6719", "parent": "6 units"},{"name": "COMP6780", "parent": "6 units"},
+                                    {"name": "COMP8823", "parent": "6 units"},{"name": "COMP8300", "parent": "6 units"},
+                                    {"name": "COMP6261", "parent": "6 units"},{"name": "COMP8701", "parent": "6 units"},
+                                    {"name": "COMP6301", "parent": "6 units"},{"name": "COMP6262", "parent": "6 units"},
+                                    {"name": "COMP8440", "parent": "6 units"},{"name": "COMP8800", "parent": "6 units"},
+                                    {"name": "COMP6720", "parent": "6 units"},{"name": "COMP8502", "parent": "6 units"},
+                                    {"name": "COMP6730", "parent": "6 units"},{"name": "COMP6300", "parent": "6 units"},
+                                    {"name": "COMP7310", "parent": "6 units"},{"name": "COMP8705", "parent": "6 units"},
+                                    {"name": "COMP7240", "parent": "6 units"},{"name": "COMP8330", "parent": "6 units"},
+                                    {"name": "COMP8180", "parent": "6 units"},{"name": "COMP6700", "parent": "6 units"},
+                                    {"name": "COMP6363", "parent": "6 units"},{"name": "COMP8820", "parent": "6 units"},
+                                    {"name": "COMP8501", "parent": "6 units"},{"name": "COMP6361", "parent": "6 units"},
+                                    {"name": "COMP7230", "parent": "6 units"}
+                                ]
+                            },
+                            {
+                                "name": "24 units",
+                                "parent": "AND",
+                                "children": [
+                                    {
+                                        "name": "Aritifiial Intelligence",
+                                        "parent": "24 units",
+                                        "children":[
+                                            {"name": "COMP6262", "parent": "Artificial Intelligence"},
+                                            {"name": "COMP6320", "parent": "Artificial Intelligence"},
+                                            {"name": "COMP8620", "parent": "Artificial Intelligence"},
+                                            {"name": "COMP8691", "parent": "Artificial Intelligence"}
+                                        ]
+                                    },
+                                    {
+                                        "name": "Data Science",
+                                        "parent": "24 units",
+                                        "children":[
+                                            {
+                                                "name": "18 units",
+                                                "parent": "Data Science",
+                                                "children": [
+                                                    {"name": "COMP8410", "parent": "Data Science"},
+                                                    {"name": "COMP8430", "parent": "Data Science"},
+                                                    {"name": "COMP6490", "parent": "Data Science"}
+                                                ]
+                                            },
+                                            {
+                                                "name": "6 units",
+                                                "parent": "Data Science",
+                                                "children": [
+                                                    {"name": "COMP6320", "parent": "6 units"},
+                                                    {"name": "COMP8420", "parent": "6 units"},
+                                                    {"name": "COMP8600", "parent": "6 units"},
+                                                    {"name": "COMP8520", "parent": "6 units"},
+                                                    {"name": "COMP8650", "parent": "6 units"}
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "Human Centred Design and Software Development",
+                                        "parent": "24 units",
+                                        "children": [
+                                            {
+                                                "name": "<=12 units",
+                                                "parent": "Human Centred Design and Software Development",
+                                                "children":[
+                                                    {"name": "COMP6353", "parent": "<=12 units"},
+                                                    {"name": "COMP6390", "parent": "<=12 units"},
+                                                    {"name": "COMP6461", "parent": "<=12 units"}
+                                                ]
+                                            },
+                                            {
+                                                "name": ">=12 units",
+                                                "parent": "Human Centred Design and Software Development",
+                                                "children":[
+                                                    {"name": "COMP8100", "parent": ">=12 units"},
+                                                    {"name": "COMP8173", "parent": ">=12 units"},
+                                                    {"name": "COMP8190", "parent": ">=12 units"},
+                                                    {"name": "COMO8420", "parent": ">=12 units"},
+                                                    {"name": "VCPG6001", "parent": ">=12 units"},
+                                                    {"name": "VCPG6004", "parent": ">=12 units"},
+                                                    {"name": "VCPG8001", "parent": ">=12 units"}
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+  
+        
+      ]
+    }
+  ]
+
+// ************** Generate the tree diagram	 *****************
+// The basic structure of interactive tree has a reference on http://bl.ocks.org/d3noob/8375092, which gives a basic implementation of d3.js tree diagram.
+$('#table').hide();
+
+var margin = {top: 20, right: 120, bottom: 20, left: 120},
+	width = 1500 - margin.right - margin.left,
+	height = 1500 - margin.top - margin.bottom;
+	
+var i = 0,
+	duration = 400,
+	root;
+
+var tree = d3.layout.tree()
+	.size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+	.projection(function(d) { return [d.y, d.x]; });
+
+var svg = d3.select("body").append("svg")
+	.attr("width", width + margin.right + margin.left)
+	.attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var re = /[A-Z]{4}\d{4}[A-Z]?/;
+
+var preference = {};
+
+preference['replaced'] = new Array();
+
+root = treedata[0];
+root.x0 = height / 2;
+root.y0 = 0;
+update(root);
+
+d3.select(self.frameElement).style("height", "500px");
+
+var colorFunction = d3.interpolate('#fee08b','#d73027');
+
+function update(source) {
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse(),
+	  links = tree.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = svg.selectAll("g.node")
+	  .data(nodes, function(d) {
+      // d['flag'] = 0;
+      d['spec'] = false;
+      d['name'] = d.name;
+      return d.id || (d.id = ++i); 
+    });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+	  .attr("class", "node")
+    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+    
+  var SET_spec = false;
+  
+  nodeEnter.append("circle")
+      .attr("r", 1e-6)
+      .on("click", function (d) {
+        if (d.children == undefined){
+          if (d['flag'] == undefined){
+            d['flag'] = 0;
+            var cVal = colorFunction(d['flag']);
+            d3.select(this).style("fill", cVal);
+          }
+          else if (d['flag'] <= 0.8) {
+            d['flag'] += 0.2;
+            var cVal = colorFunction(d['flag']);
+            d3.select(this).style("fill", cVal);
+          }
+          else if (d['flag'] == 1) {
+            d['flag'] = undefined;
+            d3.select(this).style("fill", undefined);
+          }
+          
+          console.log("visited: " + d['visited']);
+          console.log("V: " + d['flag']);
+          console.log("N: " + d.name);
+        }
+        else{
+          // If this branch is not set for the preferred spec.
+          if (d['spec'] == false){
+            if (SET_spec == false){
+              d['spec'] = true;
+              d['flag'] = 1;
+              SET_spec = true;
+              var cVal = colorFunction(d['flag']);
+              d3.select(this).style("fill", cVal);
+            }
+            else {
+              alert("You can only choose one spec, make your decision!");
+            }
+          }
+          else{
+            d['spec'] = false;
+            d['flag'] = undefined;
+            SET_spec = false;
+            d3.select(this).style("fill", undefined);
+          }
+          
+          console.log("spec: " + d['spec']);
+          console.log("N: " + d.name);
+        }
+      });
+
+  nodeEnter.append("text")
+	  .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+	  .attr("dy", ".35em")
+	  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+	  .text(function(d) { return d.name; })
+	  .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+	  .duration(duration)
+	  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+    .attr("r", 10);
+
+  nodeUpdate.select("text")
+	  .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+	  .duration(duration)
+	  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+	  .remove();
+
+  nodeExit.select("circle")
+	  .attr("r", 1e-6);
+
+  nodeExit.select("text")
+	  .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg.selectAll("path.link")
+	  .data(links, function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+	  .attr("class", "link")
+	  .attr("d", function(d) {
+		var o = {x: source.x0, y: source.y0};
+		return diagonal({source: o, target: o});
+	  });
+
+  // Transition links to their new position.
+  link.transition()
+	  .duration(duration)
+	  .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+	  .duration(duration)
+	  .attr("d", function(d) {
+		var o = {x: source.x, y: source.y};
+		return diagonal({source: o, target: o});
+	  })
+    .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+	d.x0 = d.x;
+	d.y0 = d.y;
+  });
+}
+
+function check() {
+  var stack = [];
+  var course_name = [];
+  stack.push(root);
+  // Breath-first search
+  while(stack.length!==0) {
+    var element = stack.pop();
+    element['visited'] = true;
+    if (element.children == undefined){
+      // To avoid sending those undefined values to the backend.
+      if (element['flag'] != undefined){
+        // To exclude duplicated assignment.
+        // if (preference[element.name] == undefined){
+          // Keep the first digit and ignore the latter, e.g. 0.80 -> 0.8
+        preference[element.name] = element['flag'].toFixed(1) * 1;
+        // }
+      }
+    }
+    else{
+      if (element['spec'] == true){
+        preference['spec'] = element.parent.children.indexOf(element)+1;
+      }
+      for (var i=0; i<element.children.length; i++) {
+        stack.push(element.children[element.children.length-i-1]);
+      }
+    }
+  }
+
+  preference['program'] = document.getElementById("enroll-program").value;
+  preference['enroll_yr'] = document.getElementById("enroll-year").value;
+  preference['enroll_sem'] = document.getElementById("enroll-month").value;
+
+  $.ajax({
+    type: 'POST',
+    url: "/receiveData",
+    data: JSON.stringify(preference),
+    contentType: 'application/json; charset=UTF-8',
+    success: function(tabledata){
+      alert('success!');
+      console.log(tabledata);
+      tabledata = JSON.parse(tabledata);
+      if (tabledata[0]["c1"] != undefined){
+        // destroy it before refresh data, otherwise it would not reload data in it.
+        $('#table').bootstrapTable("destroy");
+        var $table = $('#table');
+        $(function () {
+          $('#table').bootstrapTable({
+            data: tabledata
+          });
+        });
+        $('#table').show();
+      }
+      else {
+        alert('No available plan');
+      }
+    }
+  });
+  $('#table').on('click-cell.bs.table', function (e, field, value, row, $element){
+    if (re.test(value)) {
+      console.log(value);
+      preference[value] = 0;
+      preference['replaced'].push(value);
+      alert('You are going to replace this course');
+    }
+    else {
+      alert('This is not a course');
+    }
+  });
+}
+
+function editTable() {
+  $.ajax({
+    type: 'POST',
+    url: "/returnTheTable",
+    data: JSON.stringify(preference),
+    contentType: 'application/json; charset=UTF-8',
+    success: function(newPlan){
+      alert('Updated!');
+      console.log(newPlan);
+      newPlan = JSON.parse(newPlan);
+      if (newPlan[0]["c1"] == undefined){
+        alert('No available plan!');
+        for (i = 0; i<preference['replaced'].length; i++){
+          value = preference['replaced'].pop();
+          console.log(value);
+          preference[value] = 3;
+          console.log(preference[value]);
+        }
+      }
+      else{
+        $('#table').bootstrapTable("destroy");
+        var $table = $('#table');
+        $(function () {
+          $('#table').bootstrapTable({
+            data: newPlan
+          });
+        });
+        $('#table').show();
+      }
+    }
+  })
+}
+
+var linear = d3.scale.linear()
+  .domain([0,1])
+  .range(['#fee08b', '#d73027']);
+
+var svg = d3.select("svg");
+
+svg.append("g")
+  .attr("class", "legendLinear")
+  .attr("transform", "translate(20,20)");
+
+var legendLinear = d3.legend.color()
+  .shapeWidth(30)
+  .cells(10)
+  .orient('horizontal')
+  .scale(linear);
+
+svg.select(".legendLinear")
+  .call(legendLinear);
+
+</script>
+	
+</body>
+</html>

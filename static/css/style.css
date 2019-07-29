@@ -1,0 +1,149 @@
+/* 
+    Honour Project: ANU Study Planner
+    
+    Author: Tianshu Wang
+    uniID: u6342392
+*/
+
+/* 
+	In this program, we polish our GUI by CSS.
+*/
+
+*
+	{
+	margin:auto;
+	padding:0;
+	border:0;
+	}
+<!--
+	a:link {text-decoration: none;color: black}
+	a:active {text-decoration: none;color: grey}
+	a:hover {text-decoration: none;color: grey}
+	a:visited {text-decoration: none;color: black}
+-->
+body
+{
+    background-color:#eef3f7;
+	text-align:center;
+	font-family:Microsoft JhengHei;
+	font-size:16px;
+}
+div#namespace
+{
+	width:600px;
+	height:96px;
+	float:left;
+}
+div#bnr
+{
+	width: 960px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	color: #666;
+}
+div#bnr-wrap
+{
+	background: #333;
+	border-bottom: #acc0c6 5px solid;
+	height: 101px;
+}
+div#bnr-left
+{
+	float: left;
+	margin: 0;
+	padding: 20px 2.0833% 20px 2.0833%;
+}
+div#bnr-right
+{
+	padding-top: 22px;
+	font-size: 1.5em;
+	color: #ebebeb;
+	text-align: right;
+	letter-spacing: 0.05em;
+	line-height: 0.75em;
+	width: 230.56px;
+	height: 50px;
+}
+div#mainpage
+{
+	font-weight: bold;
+	font-size: 20.4px!important;
+	width: 236px;
+	height: 50px;
+	padding-top: 22px;
+	color: #ebebeb!important;
+}
+p#sysname
+{
+	color: #ebebeb!important;
+}
+div#test-white
+{
+	color: #fff;
+	max-width: 100%;
+	height: auto;
+	width: auto;
+}
+div#breadcrumbs
+{
+	min-width: 960px;
+	background-color: #dceff5;
+	display: block;
+	font-size: 1.3rem;
+	color: #666;
+	font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+	width: auto;
+	height: 37px;
+}
+div#breadcrumbs ul#menu
+{
+	transition-timing-function: linear;
+	opacity: 1;
+	width: 920px;
+	height: 37px;
+}
+div#breadcrumbs ul#menu li
+{
+	display: block;
+	float: left;
+	text-align: center;
+	width: 250px;
+	padding-top: 7.5px;
+
+}
+div#breadcrumbs ul#menu li a
+{
+	display:block;
+	text-align:center;
+}
+.button
+{
+	font-size: 1.2rem !important;
+	border-radius: 3px;
+	font-weight: bold;
+	background:#3e85bd;
+	color: #fff;
+	display: block;
+	float: left;
+	padding: 8px 8px 7px;
+	position: relative;
+	text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.4);
+}
+table.center {
+	left: 200px;
+	right: 0px;
+	margin: 0 auto;
+}
+
+option
+{
+	min-height: 1.2em;
+	padding: 0px 2px 1px;
+}
+
+div#enrollinfo
+{
+	float: right;
+	margin-block-end: 10px;
+}
