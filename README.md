@@ -37,10 +37,10 @@ set FLASK_APP=index.py
 flask run
 ```
 Under Linux, write this for the same purpose as above:
-'''
+```
 export FLASK_APP=index.py
 flask run
-'''
+```
 
 The result from the above operation should be like this:
 ``` Serving Flask app "index.py"
