@@ -31,13 +31,18 @@ Based on the rules in Flask, we store .css and images file in `static` folder, a
 
 ## Usage ##
 
-In Windows environment, after getting into the target folder, write `command`:
+Under Windows environment, after going into the target folder, write `command`:
 ```
 set FLASK_APP=index.py
 flask run
 ```
+Under Linux, write this for the same purpose as above:
+'''
+export FLASK_APP=index.py
+flask run
+'''
 
-The result should be like this:
+The result from the above operation should be like this:
 ``` Serving Flask app "index.py"
  Environment: production
  WARNING: Do not use the development server in a production environment.
@@ -45,9 +50,9 @@ The result should be like this:
  Debug mode: off
  Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
-In our system, click `Let's Plan` when you finish the first input of course preference.
+When using our system, click `Let's Plan` when you finish the first input of course preference.
 
-After generating a plan, to refine the plan, you should click on the undesired courses in the plan and after that click on `Update`.
+After generating a plan, to refine it, you should click on the undesired courses in the plan and after that click on `Update`.
 
 However, anytime during using the system, resetting preference for courses is allowed.
 
