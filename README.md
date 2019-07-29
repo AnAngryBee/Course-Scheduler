@@ -6,7 +6,7 @@ This Python program has been firstly written by **Lincoln Smith**, and kindly gi
 
 Tianshu Wang is responsible for the function `buildAModel` and some other assitant functions. Lincoln wrote the scraper program.
 
-Many thanks to Lincoln for his great help and contribution in this project.
+Many thanks go to Lincoln for his great help and contribution in this project.
 
 The goal in this program is converting from obtained P&C data to MiniZinc model components (for many programs). 
 
